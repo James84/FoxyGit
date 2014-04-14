@@ -1,1 +1,13 @@
 C:\git\private\GitGui\GitGui\bin\Debug\GitGui.exe.config
+C:\git\private\GitGui\GitGui\bin\Debug\GitGui.exe
+C:\git\private\GitGui\GitGui\bin\Debug\GitGui.pdb
+C:\git\private\GitGui\GitGui\obj\Debug\GitGui.csprojResolveAssemblyReference.cache
+C:\git\private\GitGui\GitGui\obj\Debug\MainWindow.baml
+C:\git\private\GitGui\GitGui\obj\Debug\MainWindow.g.cs
+C:\git\private\GitGui\GitGui\obj\Debug\App.g.cs
+C:\git\private\GitGui\GitGui\obj\Debug\GitGui_MarkupCompile.cache
+C:\git\private\GitGui\GitGui\obj\Debug\GitGui.g.resources
+C:\git\private\GitGui\GitGui\obj\Debug\GitGui.Properties.Resources.resources
+C:\git\private\GitGui\GitGui\obj\Debug\GitGui.csproj.GenerateResource.Cache
+C:\git\private\GitGui\GitGui\obj\Debug\GitGui.exe
+C:\git\private\GitGui\GitGui\obj\Debug\GitGui.pdb

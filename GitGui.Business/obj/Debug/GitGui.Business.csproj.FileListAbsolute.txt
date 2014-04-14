@@ -1,0 +1,5 @@
+C:\git\private\GitGui\GitGui.Business\bin\Debug\GitGui.Business.dll
+C:\git\private\GitGui\GitGui.Business\bin\Debug\GitGui.Business.pdb
+C:\git\private\GitGui\GitGui.Business\obj\Debug\GitGui.Business.csprojResolveAssemblyReference.cache
+C:\git\private\GitGui\GitGui.Business\obj\Debug\GitGui.Business.dll
+C:\git\private\GitGui\GitGui.Business\obj\Debug\GitGui.Business.pdb
