@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,8 +10,12 @@ namespace GitGui.Business.Queries
 {
     public class QueryGit
     {
-        ProcessStartInfo gitProcessInfo;
-        Process gitProcess;
+        private readonly ProcessStartInfo gitProcessInfo;
+        private readonly Process gitProcess;
+
+        private string _path;
+        private string _workingDirectory;
+        private bool _gitSetup;
 
         public QueryGit()
         {
@@ -18,14 +23,25 @@ namespace GitGui.Business.Queries
             gitProcess     = new Process();
         }
 
-        public string GetCurrentBranch(string path, string workingDirectory)
+        public void SetRepo(string path, string workingDirectory)
         {
-            Configure(path, workingDirectory, "branch");
+            _path = path;
+            _workingDirectory = workingDirectory;
+            Configure();
+            _gitSetup = true;
+        }
 
-            gitProcess.Start();
+        public string GetCurrentBranch()
+        {
+            //Configure("branch");
 
-            var outputStream = gitProcess.StandardOutput;
-            var errorStream = gitProcess.StandardError;
+            if (!_gitSetup) 
+                return "An error has occurred";
+
+            StreamReader outputStream;
+            StreamReader errorStream;
+
+            Run("branch", out outputStream, out errorStream);
 
             while (!outputStream.EndOfStream)
             {
@@ -41,12 +57,23 @@ namespace GitGui.Business.Queries
             //    errorStream.ReadToEnd().Dump("ERROR!!!:");
         }
 
-        public IEnumerable<string> GetModifiedFiles(string path, string workingDirectory)
+        public IEnumerable<string> GetAllBranches()
         {
-            Configure(path, workingDirectory, "diff --name-only");
+            StreamReader outputStream;
+            StreamReader errorStream;
 
-            var outputStream = gitProcess.StandardOutput;
-            var errorStream = gitProcess.StandardError;
+            Run("branch", out outputStream, out errorStream);
+
+            while (!outputStream.EndOfStream)
+                yield return outputStream.ReadLine();
+        }
+
+        public IEnumerable<string> GetModifiedFiles()
+        {
+            StreamReader outputStream;
+            StreamReader errorStream;
+
+            Run("diff --name-only", out outputStream, out errorStream);
 
             while (!outputStream.EndOfStream)
                 yield return outputStream.ReadLine();
@@ -56,16 +83,25 @@ namespace GitGui.Business.Queries
             //    errorStream.ReadToEnd().Dump("ERROR!!!:");
         }
 
-        private void Configure(string path, string workingDirectory, string command)
+        private void Configure()
         {
             gitProcessInfo.CreateNoWindow         = true;
-            gitProcessInfo.FileName               = path;
+            gitProcessInfo.FileName               = _path;
             gitProcessInfo.RedirectStandardError  = true;
             gitProcessInfo.RedirectStandardOutput = true;
             gitProcessInfo.UseShellExecute        = false;
-            gitProcessInfo.Arguments              = command;
-            gitProcessInfo.WorkingDirectory       = workingDirectory;
+            gitProcessInfo.WorkingDirectory       = _workingDirectory;
             gitProcess.StartInfo                  = gitProcessInfo;
-        }	
+        }
+
+        private void Run(string commamd, out StreamReader outputStream, out StreamReader errorStream)
+        {
+            gitProcessInfo.Arguments = commamd;
+
+            gitProcess.Start();
+
+            outputStream = gitProcess.StandardOutput;
+            errorStream  = gitProcess.StandardError;
+        }
     }
 }
