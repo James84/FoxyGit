@@ -21,7 +21,7 @@ namespace GitGui
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private string workingDirectory = string.Empty;
         private readonly string gitExe = ConfigurationManager.AppSettings["git-path"];
@@ -41,6 +41,8 @@ namespace GitGui
 
         private void Repo_Label_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (string.IsNullOrEmpty(workingDirectory)) return;
+
             var dialog = new FolderBrowserDialog();
 
             var dialogResult = dialog.ShowDialog();
@@ -55,31 +57,41 @@ namespace GitGui
 
         private void Branch_Label_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (!string.IsNullOrEmpty(workingDirectory))
-            {
-                var branch = queryGit.GetCurrentBranch();
+            if (string.IsNullOrEmpty(workingDirectory)) return;
 
-                InfoBlock.Text = string.Format("Your current branch is: {0}", branch);
-                InfoBlock.Visibility = Visibility.Visible;
-            }
+            var branch = queryGit.GetCurrentBranch();
+
+            InfoBlock.Text = string.Format("Your current branch is: {0}", branch);
+            InfoBlock.Visibility = Visibility.Visible;
         }
 
         private void Branches_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (string.IsNullOrEmpty(workingDirectory)) 
-                return;
+            if (string.IsNullOrEmpty(workingDirectory)) return;
 
-            var branches = queryGit.GetAllBranches();
+            var branches = queryGit.GetAllBranches().ToList();
 
-            var branchList = branches as IList<string> ?? branches.ToList();
-
-            if (!branchList.Any()) 
+            if (!branches.Any()) 
                 return;
 
             InfoBlock.Text += "\n Available branches: ";
 
-            foreach (var branch in branchList)
+            foreach (var branch in branches)
                 InfoBlock.Text += string.Format("\n {0}", branch);
+        }
+
+        private void Diff_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(workingDirectory)) return;
+
+            var diff = queryGit.GetModifiedFiles().ToList();
+
+            if (!diff.Any())
+                return;
+
+            foreach (var branch in diff)
+                InfoBlock.Text += string.Format("\n {0}", branch);
+
         }
     }
 }
